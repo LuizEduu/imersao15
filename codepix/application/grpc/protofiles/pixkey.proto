@@ -1,0 +1,5 @@
+syntax = "proto3";
+
+package github.com.luizeduu.codepix;
+
+option go_package = "protofiles;pb";
