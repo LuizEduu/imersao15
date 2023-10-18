@@ -8,6 +8,10 @@ import (
 	uuid "github.com/google/uuid"
 )
 
+func init() {
+	govalidator.SetFieldsRequiredByDefault(true)
+}
+
 const (
 	TransactionPending   string = "pending"
 	TransactionCompleted string = "completed"
@@ -26,15 +30,17 @@ type Transactions struct {
 }
 
 type Transaction struct {
-	Base              `valid:"required"`
-	AccountFrom       *Account `valid:"-"`
-	AccountFromID     string   `gorm:"column:account_from_id;type:uuid;" valid:"notnull"`
-	Amount            float64  `gorm:"type:float" json:"amount" valid:"notnull"`
-	PixKeyTo          *PixKey  `valid:"-"`
-	PixKeyIDTo        string   `gorm:"column:pix_key_id_to;type:uuid;" valid:"notnull"`
-	Status            string   `gorm:"type:varchar(20)" json:"status" valid:"notnull"`
-	Description       string   `gorm:"type:varchar(255)" json:"description" valid:"notnull"`
-	CancelDescription string   `gorm:"type:varchar(255)" json:"cancel_description" valid:"notnull"`
+	ID                string    `json:"id" valid:"required"`
+	AccountFrom       *Account  `valid:"-"`
+	AccountFromID     string    `gorm:"column:account_from_id;type:uuid;" valid:"notnull"`
+	Amount            float64   `gorm:"type:float" json:"amount" valid:"notnull"`
+	PixKeyTo          *PixKey   `valid:"-"`
+	PixKeyIdTo        string    `gorm:"column:pix_key_id_to;type:uuid;" valid:"notnull"`
+	Status            string    `gorm:"type:varchar(20)" json:"status" valid:"notnull"`
+	Description       string    `gorm:"type:varchar(255)" json:"description" valid:"notnull"`
+	CancelDescription string    `gorm:"type:varchar(255)" json:"cancel_description" valid:"-"`
+	CreatedAt         time.Time `json:"created_at" valid:"-"`
+	UpdatedAt         time.Time `json:"updated_at" valid:"-"`
 }
 
 func (transaction *Transaction) validateAmount() error {
@@ -101,11 +107,13 @@ func (transaction *Transaction) isValid() error {
 
 func NewTransaction(accountFrom *Account, amount float64, pixKeyTo *PixKey, description string) (*Transaction, error) {
 	transaction := Transaction{
-		AccountFrom: accountFrom,
-		Amount:      amount,
-		PixKeyTo:    pixKeyTo,
-		Status:      TransactionPending,
-		Description: description,
+		AccountFrom:   accountFrom,
+		AccountFromID: accountFrom.ID,
+		Amount:        amount,
+		PixKeyTo:      pixKeyTo,
+		PixKeyIdTo:    pixKeyTo.ID,
+		Status:        TransactionPending,
+		Description:   description,
 	}
 
 	transaction.ID = uuid.New().String()

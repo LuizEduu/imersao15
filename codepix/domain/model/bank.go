@@ -7,11 +7,17 @@ import (
 	uuid "github.com/google/uuid"
 )
 
+func init() {
+	govalidator.SetFieldsRequiredByDefault(true)
+}
+
 type Bank struct {
-	Base     `valid:"required"`
-	Code     string     `json:"code" gorm:"type:varchar(20)" valid:"notnull"`
-	Name     string     `json:"name" gorm:"type:varchar(20)" valid:"notnull"`
-	Accounts []*Account `gorm:"ForeignKey:BankID" valid:"-"`
+	ID        string     `json:"id" valid:"required"`
+	Code      string     `json:"code" gorm:"type:varchar(20)" valid:"notnull"`
+	Name      string     `json:"name" gorm:"type:varchar(20)" valid:"notnull"`
+	Accounts  []*Account `gorm:"ForeignKey:BankID" valid:"-"`
+	CreatedAt time.Time  `json:"created_at" valid:"-"`
+	UpdatedAt time.Time  `json:"updated_at" valid:"-"`
 }
 
 func (bank *Bank) isValid() error {
