@@ -42,7 +42,7 @@ func (repository *PixKeyRepositoryDb) RegisterKey(pixKey *model.PixKey) (*model.
 
 }
 
-func (repository *PixKeyRepositoryDb) FindKeyById(key string, kind string) (*model.PixKey, error) {
+func (repository *PixKeyRepositoryDb) FindKeyByKind(key string, kind string) (*model.PixKey, error) {
 	var pixKey model.PixKey
 
 	repository.Db.Preload("Account.Bank").First(&pixKey, "kind = ? and key = ?", kind, key)
