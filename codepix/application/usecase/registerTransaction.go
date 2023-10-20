@@ -11,7 +11,7 @@ type RegisterTransactionUseCase struct {
 	PixKeyRepository      model.PixKeyRepositoryInterface
 }
 
-func (registerTransactionUseCase *RegisterTransactionUseCase) Execute(accountId string, amount float64, pixKeyTo string, pixKeyKindTo string, description string) (*model.Transaction, error) {
+func (registerTransactionUseCase *RegisterTransactionUseCase) Execute(accountId string, amount float64, pixKeyTo string, pixKeyKindTo string, description string, id string) (*model.Transaction, error) {
 	account, err := registerTransactionUseCase.PixKeyRepository.FindAccount(accountId)
 
 	if err != nil {
@@ -24,7 +24,7 @@ func (registerTransactionUseCase *RegisterTransactionUseCase) Execute(accountId 
 		return nil, err
 	}
 
-	transaction, err := model.NewTransaction(account, amount, pixKey, description)
+	transaction, err := model.NewTransaction(account, amount, pixKey, description, id)
 
 	if err != nil {
 		return nil, err
