@@ -8,17 +8,17 @@ import (
 
 type RegisterTransactionUseCase struct {
 	TransactionRepository model.TransactionRepositoryInterface
-	PixRepository         model.PixKeyRepositoryInterface
+	PixKeyRepository      model.PixKeyRepositoryInterface
 }
 
 func (registerTransactionUseCase *RegisterTransactionUseCase) Execute(accountId string, amount float64, pixKeyTo string, pixKeyKindTo string, description string) (*model.Transaction, error) {
-	account, err := registerTransactionUseCase.PixRepository.FindAccount(accountId)
+	account, err := registerTransactionUseCase.PixKeyRepository.FindAccount(accountId)
 
 	if err != nil {
 		return nil, err
 	}
 
-	pixKey, err := registerTransactionUseCase.PixRepository.FindKeyByKind(pixKeyKindTo, pixKeyKindTo)
+	pixKey, err := registerTransactionUseCase.PixKeyRepository.FindKeyByKind(pixKeyKindTo, pixKeyKindTo)
 
 	if err != nil {
 		return nil, err
